@@ -1,0 +1,25 @@
+{
+  "name": "ПУЛЬС — спорт и привычки",
+  "short_name": "ПУЛЬС",
+  "lang": "ru",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b0e0b",
+  "theme_color": "#0b0e0b",
+  "description": "Бесплатное приложение на русском языке: движение, питание и полезные привычки.",
+  "icons": [
+    {
+      "src": "./pulse-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./pulse-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0e0b">
+<title>ПУЛЬС — спорт и привычки</title>
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+:root{--bg:#0b0e0b;--panel:#151a16;--panel2:#202720;--line:#303a31;--text:#f4f7f2;--muted:#a5afa5;--lime:#d5ff38;--warn:#ffcf70;--danger:#ff8d83}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,sans-serif;padding-bottom:90px}
+header{position:sticky;top:0;z-index:8;background:#0b0e0bf2;backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:15px 17px;display:flex;justify-content:space-between;align-items:center}
+.brand{font-size:25px;font-weight:950;letter-spacing:2px}.brand span{color:var(--lime)}.tag{font-size:10px;letter-spacing:1.5px;color:var(--muted)}
+main{max-width:760px;margin:auto;padding:14px}.screen{display:none}.screen.active{display:block}
+h1{font-size:26px;margin:10px 0 4px}h2{font-size:18px;margin:2px 0 12px}h3{font-size:15px;margin:4px 0 8px}
+p{color:var(--muted);line-height:1.48}.muted{color:var(--muted);font-size:12px}.lime{color:var(--lime)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:19px;padding:15px;margin:12px 0}
+.hero{background:linear-gradient(135deg,#202a20,#111612 72%);border-color:#465535}
+.kicker{font-size:11px;color:var(--lime);font-weight:850;letter-spacing:1.2px}
+.row{display:flex;gap:9px;align-items:center}.between{justify-content:space-between}.wrap{flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.stat{background:var(--panel2);padding:12px;border-radius:14px}.stat b{display:block;font-size:23px}.stat small{font-size:11px;color:var(--muted)}
+button,.btn{border:0;border-radius:12px;padding:11px 14px;background:var(--lime);color:#10140e;font-weight:850;font-size:13px;cursor:pointer}.btn{text-decoration:none;display:inline-block}
+button.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}button.ghost{background:transparent;color:var(--lime);border:1px solid #586a37}
+button:disabled{opacity:.45;cursor:not-allowed}
+input,select,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:11px;background:#0f140f;color:var(--text);font:inherit;margin:5px 0 11px}
+label{display:block;color:var(--muted);font-size:12px;margin-top:5px}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:10;display:flex;justify-content:space-around;background:#111612f5;border-top:1px solid var(--line);padding:7px 2px calc(7px + env(safe-area-inset-bottom))}
+nav button{background:transparent;color:var(--muted);padding:5px 3px;min-width:54px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px}
+nav button.active{color:var(--lime)}nav .ico{font-size:19px}
+.quote{font-size:19px;font-weight:750;line-height:1.45}.item{padding:11px 0;border-bottom:1px solid var(--line)}.item:last-child{border:0}
+.pill{display:inline-block;padding:5px 9px;border-radius:20px;background:var(--panel2);border:1px solid var(--line);font-size:11px;color:var(--muted);margin:2px}
+.daygrid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin:12px 0}.day{border:1px solid var(--line);background:var(--panel2);border-radius:9px;min-height:37px;color:var(--muted);font-size:11px}.day.done{background:var(--lime);color:#111;border-color:var(--lime);font-weight:900}
+.progress{height:8px;border-radius:8px;background:#303a31;overflow:hidden}.progress>i{display:block;height:100%;background:var(--lime);width:0}
+.notice{border-left:3px solid var(--warn);padding:8px 11px;background:#292318;border-radius:7px;color:#ead9b5;font-size:12px;line-height:1.4}
+small{color:var(--muted)}.hide{display:none!important}
+@media(min-width:600px){main{padding:22px}.grid{grid-template-columns:repeat(4,1fr)}}
+
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin:10px 0}
+.calendar-cell{min-height:42px;border-radius:9px;background:var(--panel2);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;color:var(--muted)}
+.calendar-cell b{font-size:12px;color:var(--text)}.calendar-cell.marked{border-color:var(--lime);background:#27321b}.calendar-cell .dot{width:5px;height:5px;border-radius:50%;background:var(--lime);margin-top:3px}
+.recipe{padding:12px 0;border-bottom:1px solid var(--line)}.recipe:last-child{border:0}
+.badge-card{background:var(--panel2);border:1px solid var(--line);border-radius:13px;padding:10px;text-align:center}.badge-card .medal{font-size:24px}.badge-card.locked{opacity:.42;filter:grayscale(1)}
+
+
+.theme-picker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:12px}
+.theme-option{display:flex;align-items:center;gap:8px;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);color:var(--text);cursor:pointer}
+.theme-option.active{outline:2px solid var(--accent);border-color:var(--accent)}
+.theme-swatch{width:19px;height:19px;border-radius:50%;border:1px solid #ffffff55;flex:0 0 auto}
+
+
+details.recipe summary{cursor:pointer;padding:4px 0;color:var(--text)}
+.notice{padding:12px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:10px;background:var(--panel2);font-size:13px;line-height:1.45}
+
+
+.exercise-card{display:grid;grid-template-columns:92px 1fr;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.exercise-art{width:92px;height:92px;border-radius:13px;background:var(--panel2);border:1px solid var(--line);object-fit:cover}
+.exercise-meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.exercise-meta .pill{font-size:11px}
+
+</style>
+</head>
+<body>
+<header><div><div class="brand">ПУЛЬС<span>.</span></div><div class="tag">ТВОЙ РИТМ · ТВОЯ СИЛА · ТВОЙ ПРОГРЕСС</div></div><div class="kicker">БЕТА 1.0</div></header>
+<main>
+<section id="home" class="screen active">
+ <div class="hero card"><div class="kicker">ТВОЙ ДЕНЬ</div><h1 id="hello">Привет!</h1><p id="dateLine"></p><p>Двигайся в своём темпе. Регулярность, полноценное питание и восстановление важнее рекордов.</p><div class="row wrap"><button onclick="go('workouts')">Выбрать тренировку</button><button class="secondary" onclick="go('food')">Записать приём пищи</button></div></div>
+ <div class="grid">
+  <div class="stat"><b id="homeMeals">0</b><small>Записей питания сегодня</small></div>
+  <div class="stat"><b id="homeWorkouts">0</b><small>Тренировок отмечено</small></div>
+  <div class="stat"><b id="homeHabits">0</b><small>Привычек отмечено</small></div>
+  <div class="stat"><b id="homeWater">0</b><small>Стаканов воды отмечено</small></div>
+ </div>
+ <div class="card"><div class="row between"><h2>Мысль дня</h2><button class="ghost" onclick="nextQuote()">Другая мысль</button></div><div id="homeQuote" class="quote"></div><p class="muted">Вдохновение без сравнений и давления.</p></div>
+ <div class="card"><h2>План заботы о себе</h2><div class="item">✓ Выбери приятную активность</div><div class="item">✓ Не пропускай полноценные приёмы пищи</div><div class="item">✓ Сделай перерыв и восстановись</div><div class="item">✓ Найди время для сна</div></div>
+</section>
+
+<section id="food" class="screen">
+ <h1>Питание</h1><p>Дневник приёмов пищи и справочник продуктов. Значения приблизительные: проверяй упаковку и состав блюда.</p>
+ <div class="notice">Это дневник наблюдений, а не система ограничений. Приложение не назначает норму калорий, дефицит или снижение веса. Особенно важно не использовать подсчёты для ограничения питания в подростковом возрасте.</div>
+ <div class="card"><h2>Добавить продукт или блюдо</h2>
+ <label>Приём пищи</label><select id="mealType"><option>Завтрак</option><option>Второй завтрак</option><option>Обед</option><option>Полдник</option><option>Ужин</option><option>Перекус</option></select>
+ <label>Найти продукт в справочнике или ввести название</label><input id="foodSearch" placeholder="Например: банан, кефир, овсянка" oninput="searchFood()">
+ <div id="foodMatches" class="muted"></div>
+ <label>Название</label><input id="foodName" placeholder="Название продукта или блюда">
+ <div class="formgrid"><div><label>Количество, г</label><input id="foodGrams" type="number" min="1" value="100"></div><div><label>Энергетическая ценность на 100 г, ккал</label><input id="foodKcal" type="number" min="0" placeholder="Уточни по упаковке"></div></div>
+ <button onclick="addFood()">Добавить в дневник</button></div>
+ <div class="card"><div class="row between"><h2>Записи за сегодня</h2><span id="foodRecordCount" class="pill">0 записей</span></div><div id="foodEntries"><p>Пока записей нет.</p></div><p class="muted">Калорийность показывается только как справочная оценка отдельных записей, без дневной цели и оценки «хорошо/плохо».</p></div>
+ <div class="card"><h2>Идеи для разнообразного питания</h2><div class="item">Завтрак: каша, йогурт, фрукты или бутерброд с яйцом.</div><div class="item">Обед: крупа или картофель, источник белка, овощи.</div><div class="item">Перекус: фрукт, творог, орехи или бутерброд.</div><div class="item">Ужин: любимое сытное блюдо с разными группами продуктов.</div></div>
+</section>
+
+<section id="workouts" class="screen">
+ <h1>Тренировки</h1><p>Выбирай комплекс по интересам и самочувствию. Все упражнения открыты каждому независимо от пола.</p>
+ <div class="card"><div class="kicker">ПОСТЕПЕННАЯ ПРОГРАММА</div><h2>План на 4 недели</h2>
+ <p>Четыре этапа с постепенным знакомством с упражнениями. Это ориентир, а не обязательный норматив: можно повторить неделю, уменьшить объём или выбрать отдых. Между силовыми занятиями оставляй время на восстановление.</p>
+ <label>Неделя</label><select id="fourWeekSelect" onchange="renderFourWeekPlan()"><option value="1">Неделя 1 — адаптация</option><option value="2">Неделя 2 — освоение движений</option><option value="3">Неделя 3 — вариативность</option><option value="4">Неделя 4 — выбор комфортного варианта</option></select>
+ <div id="fourWeekPlan" class="notice"></div>
+ <p class="muted">На 4-й неделе выбери только один вариант — круговой или силовой. Не нужно выполнять оба. Если предыдущая неделя ощущалась тяжёлой, не увеличивай нагрузку.</p>
+ </div>
+ <div class="card"><h2>Подбор программы</h2><label>Уровень</label><select id="level" onchange="renderProgram()"><option value="easy">Начальный</option><option value="medium">Средний</option><option value="active">Продвинутый</option></select><label>Направление</label><select id="programType" onchange="renderProgram()"><option value="general">Общая подготовка</option><option value="mobility">Подвижность и растяжка</option><option value="strength">Силовая основа</option><option value="endurance">Выносливость</option></select><p class="muted">План на 30 дней чередует нагрузку и восстановление. Повторения — ориентир, а не обязательство.</p><div class="daygrid" id="programCalendar"></div><div class="row between"><span id="programProgress" class="muted">Отмечено 0 из 30</span><button onclick="completeToday()">Отметить занятие</button></div><div class="progress"><i id="programBar"></i></div><div id="todayPlan" class="card"></div></div>
+ <div class="card"><h2>Библиотека упражнений</h2>
+ <p class="muted">Добавляй собственные упражнения: они сохранятся на этом устройстве и будут доступны в твоей библиотеке.</p>
+ <div class="grid2">
+  <div><label for="customExerciseName">Название упражнения *</label><input id="customExerciseName" maxlength="60" placeholder="Например, подъёмы рук"></div>
+  <div><label for="customExerciseCategory">Категория</label><select id="customExerciseCategory"><option>Силовая основа</option><option>Разминка</option><option>Выносливость</option><option>Растяжка и восстановление</option><option>Координация</option><option>Другое</option></select></div>
+ </div>
+ <label for="customExerciseDesc">Описание / техника выполнения *</label><textarea id="customExerciseDesc" rows="2" maxlength="400" placeholder="Кратко опиши, как выполнять упражнение"></textarea>
+ <div class="grid2">
+  <div><label for="customExerciseDose">Повторения или время</label><input id="customExerciseDose" maxlength="40" placeholder="Например, 8–10 раз"></div>
+  <div><label for="customExerciseSets">Подходы</label><input id="customExerciseSets" maxlength="30" placeholder="Например, 2 подхода"></div>
+ </div>
+ <label for="customExerciseTip">Подсказка (необязательно)</label><input id="customExerciseTip" maxlength="180" placeholder="Например, выполняй плавно и без боли">
+ <div class="row wrap"><button type="button" onclick="addCustomExercise()">＋ Добавить упражнение</button><span class="muted" id="customExerciseStatus" aria-live="polite"></span></div>
+ </div>
+ <div class="card"><h3>Мои упражнения</h3><div id="myExerciseList"></div></div>
+ <div class="card"><h3>Общая библиотека</h3><label>Фильтр</label><input id="exerciseFilter" placeholder="Поиск упражнения" oninput="renderExercises()"><div id="exerciseList"></div></div>
+ <div class="notice"><b>Правила безопасности</b><ul><li>Если появляется боль, головокружение или плохое самочувствие — остановись. Острая боль не является нормой.</li><li>Дыши свободно: не задерживай дыхание во время усилия.</li><li>Пей воду по жажде; после еды дай себе время на комфортное пищеварение.</li><li>Оставляй дни для отдыха. Не нужно тренироваться через усталость или выполнять все подходы любой ценой.</li><li>При травмах, заболеваниях или сомнениях обсуди упражнения с врачом или квалифицированным специалистом.</li></ul><p>Повторения и время — ориентиры, а не обязательство. Уменьши объём или пропусти упражнение, если так комфортнее.</p></div>
+</section>
+
+<section id="motivation" class="screen">
+ <h1>Мотивация</h1><p>1000 оригинальных сочетаний коротких мыслей о движении, терпении и заботе о себе.</p>
+ <div class="card"><div class="kicker" id="quoteNumber">МЫСЛЬ 1 ИЗ 1000</div><div class="quote" id="quoteText"></div><div class="row wrap" style="margin-top:16px"><button onclick="nextQuote()">Следующая мысль</button><button class="secondary" onclick="toggleFavorite()">☆ В избранное</button></div></div>
+ <div class="card"><h2>Избранное</h2><div id="favoriteList"><p>Пока нет сохранённых мыслей.</p></div></div>
+</section>
+
+<section id="habits" class="screen">
+ <h1>Привычки</h1><p>Отмечай небольшие действия, которые помогают поддерживать самочувствие.</p>
+ <div class="card"><h2>Сегодня</h2><div id="habitChecks"></div></div>
+ <div class="card" id="stepsMarathon">
+  <div class="kicker">30 ДНЕЙ ДВИЖЕНИЯ</div><h2>Марафон шагов «10 000 в день»</h2>
+  <p>Попробуй сделать ходьбу частью дня. 10 000 — ориентир марафона, а не обязательная медицинская норма: выбирай посильный темп и не пытайся наверстать пропущенное.</p>
+  <div class="notice">Можно начать с привычного количества шагов и постепенно увеличивать прогулки, если это комфортно. Отдых тоже часть марафона. При боли, головокружении или плохом самочувствии остановись.</div>
+  <label for="stepsInput">Сколько шагов сегодня? (внеси вручную)</label>
+  <div class="row"><input id="stepsInput" type="number" min="0" max="100000" step="100" placeholder="Например, 6500"><button onclick="saveSteps()">Записать</button></div>
+  <div class="row between"><b id="stepsTodayValue">Сегодня: пока нет записи</b><span class="pill" id="stepsPercent">0% от ориентира</span></div>
+  <div class="progress"><i id="stepsBar"></i></div>
+  <div class="grid"><div class="stat"><b id="stepsDays">0</b><small>Дней с записью</small></div><div class="stat"><b id="stepsTotal">0</b><small>Шагов за марафон</small></div><div class="stat"><b id="stepsBest">0</b><small>Больше всего за день</small></div><div class="stat"><b id="stepsLeft">30</b><small>Дней марафона</small></div></div>
+  <p class="muted">Записи сохраняются на этом устройстве. Шаги автоматически не считываются — пока их нужно вводить вручную.</p>
+ </div>
+
+ <div class="card"><div class="kicker">НОВОЕ</div><h2>Задание дня</h2><p id="dailyTaskText">Небольшое задание на сегодня.</p><div class="row between"><span id="dailyTaskStatus" class="muted">Можно выполнить в удобное время</span><button id="dailyTaskButton" onclick="completeDailyTask()">Выполнено</button></div></div>
+ <div class="card"><h2>Календарь активности</h2><p>Отмечай дни, когда была прогулка, тренировка или другая приятная активность.</p><div class="row between"><button class="secondary" onclick="changeCalendarMonth(-1)">←</button><b id="calendarMonth"></b><button class="secondary" onclick="changeCalendarMonth(1)">→</button></div><div class="calendar-grid" id="activityCalendar"></div><p class="muted" id="calendarSummary"></p></div>
+ <div class="card"><h2>Достижения</h2><p>Значки открываются за записи и регулярность — без соревнования с другими.</p><div class="grid" id="achievementGrid"></div></div>
+ <div class="card"><h2>Книга рецептов</h2><p>Идеи для разнообразных блюд. Это вдохновение, а не меню с ограничениями.</p><input id="recipeSearch" placeholder="Найти рецепт или ингредиент" oninput="renderRecipes()"><div id="recipeList"></div></div>
+ <div class="card"><h2>Общие марафоны</h2><p>Выбирай дружелюбные тематические задания. Участие добровольное, отдых разрешён.</p><div id="communityChallenges"></div><p class="muted">Пока это личное участие на устройстве: общего сервера, рейтинга и обмена результатами между пользователями ещё нет.</p></div>
+ <div class="card"><h2>Вода</h2><p>Отмечай стаканы, когда пьёшь. Потребность индивидуальна и зависит от погоды, активности и здоровья.</p><div class="row"><button onclick="changeWater(1)">+ Стакан</button><b id="waterValue">0</b><button class="secondary" onclick="changeWater(-1)">−</button></div></div>
+</section>
+
+
+<section id="cycle" class="screen">
+ <h1>Женское здоровье</h1>
+ <div class="card"><div class="kicker">КАЛЕНДАРЬ ЦИКЛА</div><h2>Отметить начало месячных</h2>
+ <p>Записывай первый день менструации. PULSE покажет примерную дату следующего начала по твоим предыдущим записям.</p>
+ <label for="periodStartInput">Первый день месячных</label><div class="row"><input id="periodStartInput" type="date"><button onclick="addPeriodStart()">Сохранить</button></div><div id="periodHistory" class="muted"></div></div>
+ <div class="card"><h2>Предварительный прогноз</h2><div id="periodPrediction"><p>Добавь дату начала месячных, чтобы увидеть ориентировочный прогноз.</p></div>
+ <label for="cycleLengthInput">Обычная продолжительность цикла (дни)</label><input id="cycleLengthInput" type="number" min="21" max="45" value="28">
+ <p class="muted">Если пока мало записей, используется выбранная продолжительность цикла. У многих цикл меняется от месяца к месяцу.</p><button class="secondary" onclick="saveCycleSettings()">Сохранить настройки</button></div>
+ <div class="card"><h2>Полезно знать</h2><ul>
+ <li>Прогноз приблизительный и не гарантирует дату начала.</li><li>Цикл может меняться из-за стресса, сна, болезни, лекарств и естественных возрастных изменений.</li>
+ <li>Календарь не определяет овуляцию и не подходит для предотвращения беременности.</li>
+ <li>Если месячные очень болезненные, необычно обильные, долго отсутствуют или изменения тревожат, поговори с врачом или доверенным взрослым.</li>
+ </ul><p class="muted">Данные цикла относятся к личной информации. Они сохраняются локально в браузере на этом устройстве и не отправляются в PULSE. При очистке данных браузера записи могут исчезнуть. Не используй общий или чужой телефон для таких записей.</p></div>
+</section>
+
+<section id="tools" class="screen">
+<h1>Инструменты</h1><p>Личные записи, планирование и восстановление. Данные хранятся в браузере на этом устройстве.</p>
+<div class="card"><h2>Дневник самочувствия</h2><label>Дата</label><input id="moodDate" type="date"><label>Как ты себя чувствуешь?</label><select id="moodValue"><option>Отлично</option><option>Хорошо</option><option selected>Нормально</option><option>Устал(а)</option><option>Тревожно</option><option>Грустно</option></select><label>Заметка</label><textarea id="moodNote" rows="2"></textarea><button onclick="saveMood()">Сохранить</button><div id="moodHistory"></div></div>
+<div class="card"><h2>Дневник сна</h2><label>Дата пробуждения</label><input id="sleepDate" type="date"><div class="grid"><div><label>Лег(ла) спать</label><input id="sleepFrom" type="time" value="23:00"></div><div><label>Проснул(ась)</label><input id="sleepTo" type="time" value="07:00"></div></div><label>Как отдохнул(а)?</label><select id="sleepQuality"><option>Хорошо отдохнул(а)</option><option>Средне</option><option>Не выспался(ась)</option></select><button onclick="saveSleep()">Сохранить сон</button><div id="sleepHistory"></div><p class="muted">Это дневник наблюдений, а не медицинская оценка.</p></div>
+<div class="card"><h2>Расширенная статистика</h2><div class="grid"><div class="stat"><b id="toolMoodCount">0</b><small>Записей самочувствия</small></div><div class="stat"><b id="toolSleepCount">0</b><small>Записей сна</small></div><div class="stat"><b id="toolPhotoCount">0</b><small>Фото</small></div><div class="stat"><b id="toolPlanCount">0</b><small>Планов</small></div><div class="stat"><b id="toolActivityCount">0</b><small>Дней активности</small></div><div class="stat"><b id="toolHabitCount">0</b><small>Отметок привычек</small></div></div></div>
+<div class="card"><h2>Таймер занятия</h2><div class="stat" style="text-align:center"><b id="timerDisplay" style="font-size:38px">00:00</b><small id="timerStatus">Готов к запуску</small></div><div class="row"><button onclick="startTimer()">Старт</button><button class="secondary" onclick="pauseTimer()">Пауза</button><button class="secondary" onclick="resetTimer()">Сброс</button></div></div>
+<div class="card"><h2>Конструктор тренировок</h2><label>Название плана</label><input id="planName" placeholder="Например, лёгкая разминка"><label>Упражнения — каждое с новой строки</label><textarea id="planExercises" rows="4" placeholder="Разминка&#10;Ходьба в комфортном темпе&#10;Мягкая растяжка"></textarea><label>Заметки</label><textarea id="planNotes" rows="2"></textarea><button onclick="saveWorkoutPlan()">Сохранить план</button><div id="workoutPlans"></div><p class="muted">План — подсказка, а не обязательство. Оставляй время на отдых.</p></div>
+<div class="card"><h2>Общий календарь событий</h2><label>Дата</label><input id="eventDate" type="date"><label>Событие</label><input id="eventText" placeholder="Прогулка, тренировка, отдых…"><button onclick="saveEvent()">Добавить</button><div id="eventList"></div><label style="display:flex;gap:8px;align-items:center"><input id="showCycleEvents" type="checkbox" style="width:auto" onchange="renderTools()"> Показывать даты цикла</label><p class="muted">Даты цикла скрыты по умолчанию.</p></div>
+<div class="card"><h2>Пауза и расслабление</h2><p>Дыши естественно, без задержек дыхания.</p><div class="row wrap"><button class="secondary" onclick="relaxPrompt('breath')">Спокойное дыхание</button><button class="secondary" onclick="relaxPrompt('pause')">Тихая пауза</button><button class="secondary" onclick="relaxPrompt('stretch')">Мягкая разминка</button></div><div id="relaxText" class="notice" style="margin-top:12px">Выбери практику.</div></div>
+<div class="card"><h2>Фотодневник блюд</h2><p>Фото и заметки без подсчёта калорий и оценок еды.</p><label>Выбрать фото</label><input id="foodPhoto" type="file" accept="image/*"><label>Заметка</label><input id="photoNote" placeholder="Например, домашний обед"><button onclick="saveFoodPhoto()">Сохранить фото</button><div id="foodPhotoList"></div><p class="muted">Фото сохраняются в браузере. Каждое — до 1,2 МБ.</p></div>
+<div class="card"><h2>Аватар профиля</h2><p>Выбери значок.</p><div class="row wrap"><button class="secondary" onclick="setAvatar('🌿')">🌿</button><button class="secondary" onclick="setAvatar('⚡')">⚡</button><button class="secondary" onclick="setAvatar('🐼')">🐼</button><button class="secondary" onclick="setAvatar('🦊')">🦊</button><button class="secondary" onclick="setAvatar('🌙')">🌙</button><button class="secondary" onclick="setAvatar('🎨')">🎨</button><button class="secondary" onclick="setAvatar('🏃')">🏃</button><button class="secondary" onclick="setAvatar('💜')">💜</button></div><div class="stat">Твой аватар: <b id="currentAvatar" style="display:inline;font-size:28px">🌿</b></div></div>
+
+<div class="card"><div class="kicker">ИГРОВОЙ ПРОГРЕСС</div><h2>Уровни, опыт и награды</h2>
+ <div class="stat"><b id="xpLevel" style="font-size:30px">1</b><small id="xpTitle">Уровень 1 · Новичок</small><div class="progress"><span id="xpBar" style="width:0%"></span></div><small id="xpPoints">0 очков опыта</small></div>
+ <p class="muted">Опыт начисляется за небольшие личные достижения. Это игровая поддержка, а не оценка твоей физической формы.</p><div id="rewardShelf" class="grid"></div>
+</div>
+<div class="card"><div class="kicker">СПОРТИВНАЯ БИБЛИОТЕКА</div><h2>Энциклопедия упражнений</h2>
+ <label>Поиск упражнения</label><input id="exerciseSearch" placeholder="Например, ходьба, плечи…" oninput="renderEncyclopedia()">
+ <label>Категория</label><select id="exerciseCategory" onchange="renderEncyclopedia()"><option value="">Все категории</option><option>Разминка</option><option>Выносливость</option><option>Силовая основа</option><option>Подвижность</option><option>Баланс</option><option>Восстановление</option><option>Координация</option></select>
+ <div id="encyclopediaList"></div><p class="muted">Выполняй движения в комфортной амплитуде. При боли или плохом самочувствии остановись.</p>
+</div>
+<div class="card"><div class="kicker">ИДЕИ ДЛЯ СТОЛА</div><h2>Кулинарная книга</h2>
+ <label>Поиск рецепта</label><input id="recipeSearch" placeholder="Название или ингредиент…" oninput="renderCookbook()">
+ <div id="cookbookList"></div><p class="muted">Рецепты — идеи для разнообразного питания, а не правила или ограничения.</p>
+</div>
+<div class="card"><div class="kicker">МОЯ НЕДЕЛЯ</div><h2>Планировщик недели</h2>
+ <label>День</label><select id="weekDay"><option value="Понедельник">Понедельник</option><option value="Вторник">Вторник</option><option value="Среда">Среда</option><option value="Четверг">Четверг</option><option value="Пятница">Пятница</option><option value="Суббота">Суббота</option><option value="Воскресенье">Воскресенье</option></select>
+ <label>План или приятное занятие</label><input id="weekTask" placeholder="Прогулка, отдых, тренировка…"><button onclick="saveWeekTask()">Добавить в неделю</button><div id="weekPlanList"></div>
+</div>
+<div class="card"><div class="kicker">МОЯ МОТИВАЦИЯ</div><h2>Мотивационная стена</h2>
+ <div class="notice" id="wallQuote"></div><label>Моя мысль или напоминание</label><textarea id="wallNoteInput" rows="2" placeholder="Напиши то, что поддерживает тебя…"></textarea><button onclick="saveWallNote()">Добавить на стену</button><div id="wallNotesList"></div>
+</div>
+<div class="card"><div class="kicker">МОИ ДОСТИЖЕНИЯ</div><h2>Личные рекорды</h2>
+ <label>Что хочешь отметить?</label><select id="recordType"><option>Любимая дистанция прогулки</option><option>Время комфортной прогулки</option><option>Новое освоенное упражнение</option><option>Участие в событии</option><option>Другое достижение</option></select>
+ <label>Результат или описание</label><input id="recordValue" placeholder="Например, впервые прошёл(ла) новый маршрут"><label>Дата</label><input id="recordDate" type="date"><button onclick="saveRecord()">Сохранить достижение</button><div id="recordsList"></div>
+ <p class="muted">Здесь нет сравнения с другими и нормативов — только то, чем ты сама/сам хочешь отметить свой путь.</p>
+</div>
+<div class="card"><div class="kicker">ЛИЧНЫЙ МАРАФОН</div><h2>PULSE Challenge</h2>
+ <label>Выбери продолжительность</label><select id="challengeLength"><option value="7">7 дней</option><option value="14">14 дней</option><option value="30">30 дней</option></select>
+ <label>Тема</label><select id="challengeTheme"><option value="movement">Приятное движение</option><option value="care">Забота о себе</option><option value="variety">Новые впечатления</option></select>
+ <button onclick="startPulseChallenge()">Начать личный марафон</button><div id="activeChallengeCard"></div>
+ <p class="muted">Можно пропускать дни, менять планы и отдыхать. Здесь нет штрафов и соревнований.</p>
+</div>
+<div class="card"><div class="kicker">МОЙ СПОРТИВНЫЙ ПРОФИЛЬ</div><h2>Обо мне</h2>
+ <label>Любимый вид активности</label><input id="sportFavorite" placeholder="Например, плавание или танцы">
+ <label>Мой уровень</label><select id="sportLevel"><option>Начинающий</option><option>Любитель</option><option>Опытный</option><option>Пробую разное</option></select>
+ <label>Что мне важно?</label><select id="sportGoal"><option>Самочувствие и удовольствие</option><option>Больше двигаться в повседневной жизни</option><option>Освоить новые упражнения</option><option>Подготовиться к спортивному событию</option><option>Найти любимую активность</option></select>
+ <label>О себе</label><textarea id="sportAbout" rows="2" placeholder="Мои интересы и предпочтения…"></textarea><button onclick="saveSportsProfile()">Сохранить профиль</button>
+</div>
+<div class="card"><div class="kicker">ИДЕЯ НА СЕГОДНЯ</div><h2>Генератор тренировок</h2>
+ <label>Какой формат хочется?</label><select id="generatorMode"><option value="gentle">Мягкая активность</option><option value="mobility">Подвижность</option><option value="strength">Лёгкая силовая основа</option><option value="mixed">Разнообразное занятие</option></select>
+ <button onclick="generateWorkout()">Подобрать занятие</button><div id="generatedWorkout"></div>
+</div>
+<div class="card"><div class="kicker">МОИ ДАННЫЕ</div><h2>Отчёт PULSE</h2>
+ <p>Сформируй сводку личных записей, достижений, привычек и планов. В окне печати можно выбрать «Сохранить как PDF».</p><button onclick="exportPulseReport()">Сформировать PDF-отчёт</button>
+</div>
+<div class="card"><div class="kicker">МАЛЕНЬКИЙ ШАГ</div><h2>Случайное задание дня</h2>
+ <div class="notice" id="randomTaskText">Нажми, чтобы получить идею.</div><div class="row wrap"><button onclick="randomTask()">Другое задание</button><button class="secondary" onclick="acceptRandomTask()">Выбрать это</button></div><p class="muted" id="randomTaskStatus"></p>
+</div>
+<div class="card"><div class="kicker">ПОДЕЛИТЬСЯ НАСТРОЕНИЕМ</div><h2>Карточки для публикации</h2>
+ <label>Текст карточки</label><textarea id="shareCardText" rows="3">Твой ритм. Твоя сила. Твой прогресс.</textarea>
+ <label>Цвет оформления</label><select id="shareCardTheme"><option value="green">Лаймовый</option><option value="purple">Фиолетовый</option><option value="blue">Синий</option><option value="red">Красный</option><option value="peach">Персиковый</option></select>
+ <div id="shareCardPreview" style="border-radius:18px;min-height:170px;padding:24px;background:#202820;color:#eaffb2;display:flex;flex-direction:column;justify-content:space-between;margin:12px 0"><small>PULSE</small><b id="shareCardPreviewText" style="font-size:24px;line-height:1.25">Твой ритм. Твоя сила. Твой прогресс.</b><small>ТВОЙ РИТМ · ТВОЯ СИЛА · ТВОЙ ПРОГРЕСС</small></div>
+ <button onclick="downloadShareCard()">Скачать карточку PNG</button>
+ <p class="muted">Перед публикацией проверь, что на карточке нет личных данных.</p>
+</div>
+</section><section id="profile" class="screen">
+ <h1>Профиль и прогресс</h1><div class="card"><h2>О тебе</h2><label>Как к тебе обращаться</label><input id="profileName" placeholder="Имя"><label>Возрастная группа</label><select id="ageGroup"><option value="teen">Подросток</option><option value="adult">Взрослый</option><option value="skip">Не указывать</option></select><label>Уровень активности</label><select id="profileLevel"><option>Начинающий</option><option>Средний</option><option>Опытный</option></select><button onclick="saveProfile()">Сохранить профиль</button></div>
+ <div class="grid"><div class="stat"><b id="statFood">0</b><small>Записей питания</small></div><div class="stat"><b id="statTrain">0</b><small>Отмеченных занятий</small></div><div class="stat"><b id="statHabit">0</b><small>Привычек сегодня</small></div><div class="stat"><b id="statWater">0</b><small>Стаканов воды сегодня</small></div></div>
+ <div class="card"><h2>Мои данные</h2><p>Записи сохраняются на этом устройстве. Сделай резервную копию, если хочешь перенести их.</p><div class="row wrap"><button onclick="exportData()">Скачать резервную копию</button><label class="btn secondary">Загрузить копию<input id="importFile" type="file" accept="application/json" class="hide" onchange="importData(event)"></label></div><button class="ghost" style="margin-top:10px" onclick="clearData()">Удалить все данные</button></div>
+ 
+
+<div class="card" id="nutritionApproach">
+  <div class="kicker">ОБРАЗОВАТЕЛЬНЫЙ РАЗДЕЛ</div>
+  <h2>Подход доктора Назардана</h2>
+  <p>Раздел посвящён доктору Юнану Назардану и телепрограмме «Я вешу 300 кг». Это справочная информация, а не лечебная диета или план снижения веса.</p>
+  <details class="recipe">
+    <summary><b>Кто такой доктор Назардан?</b></summary>
+    <p>Юнан (Nowzaradan) — хирург, известный по телепрограмме «Я вешу 300 кг», в которой показывают истории людей, проходящих лечение тяжёлого ожирения. Его медицинская работа связана с комплексным лечением пациентов и подготовкой к бариатрическим операциям.</p>
+  </details>
+  <details class="recipe">
+    <summary><b>Почему его рацион нельзя копировать?</b></summary>
+    <p>Питание пациентов программы подбирается с учётом состояния здоровья, анализов, лечения и наблюдения медицинской команды. Универсального меню для всех зрителей не существует. Резкое ограничение еды или самостоятельное повторение лечебного рациона может быть опасным.</p>
+  </details>
+  <details class="recipe">
+    <summary><b>Что можно взять для повседневной заботы о себе?</b></summary>
+    <ul>
+      <li>Стараться питаться регулярно и разнообразно.</li>
+      <li>Включать в рацион разные группы продуктов.</li>
+      <li>Не пропускать приёмы пищи ради ограничений.</li>
+      <li>Учитывать самочувствие, аппетит и индивидуальные потребности.</li>
+      <li>Обсуждать лечебное питание с квалифицированным врачом.</li>
+    </ul>
+  </details>
+  <details class="recipe">
+    <summary><b>Идеи полноценных блюд</b></summary>
+    <p><b>Завтрак:</b> овсяная каша с фруктами и йогуртом.</p>
+    <p><b>Обед:</b> суп с овощами, крупой и курицей или фасолью.</p>
+    <p><b>Ужин:</b> рыба, картофель или рис и овощной салат.</p>
+    <p><b>Перекус:</b> фрукт, йогурт, бутерброд или горсть орехов — по аппетиту.</p>
+    <p class="muted">Это примеры обычных блюд, а не меню для похудения или лечебная схема.</p>
+  </details>
+  <div class="notice" style="margin-top:12px">Важно: PULSE не назначает диеты и не заменяет консультацию врача. Если требуется лечебное питание, его планируют индивидуально со специалистом.</div>
+</div>
+
+<div class="card"><h2>Оформление</h2><p>Выбери цвет акцента приложения. Изменение сохранится на этом устройстве.</p>
+<div class="theme-picker" id="themePicker">
+<button class="theme-option" data-theme="green" onclick="setTheme('green')"><i class="theme-swatch" style="background:#D5FF38"></i>Зелёный</button>
+<button class="theme-option" data-theme="red" onclick="setTheme('red')"><i class="theme-swatch" style="background:#FF5252"></i>Красный</button>
+<button class="theme-option" data-theme="blue" onclick="setTheme('blue')"><i class="theme-swatch" style="background:#438BFF"></i>Синий</button>
+<button class="theme-option" data-theme="purple" onclick="setTheme('purple')"><i class="theme-swatch" style="background:#B56BFF"></i>Фиолетовый</button>
+<button class="theme-option" data-theme="peach" onclick="setTheme('peach')"><i class="theme-swatch" style="background:#FFB38A"></i>Персиковый</button>
+<button class="theme-option" data-theme="white" onclick="setTheme('white')"><i class="theme-swatch" style="background:#F4F4F4"></i>Белый</button>
+</div></div>
+<div class="card"><div class="kicker">О ПРОЕКТЕ</div><h2>О приложении</h2><p><b style="color:var(--text)">ПУЛЬС</b> — бесплатное приложение о движении, сбалансированном питании, мотивации и полезных привычках.</p><div class="item"><span class="muted">Разработчик</span><br><b>Волконская Виктория</b></div><div class="item"><span class="muted">Почта для связи</span><br><a href="mailto:volkonskayavik@yandex.ru" style="color:var(--lime);text-decoration:none">volkonskayavik@yandex.ru</a></div><a class="btn" href="mailto:volkonskayavik@yandex.ru?subject=%D0%9F%D0%A3%D0%9B%D0%AC%D0%A1%20%E2%80%94%20%D0%BE%D0%B1%D1%80%D0%B0%D1%82%D0%BD%D0%B0%D1%8F%20%D1%81%D0%B2%D1%8F%D0%B7%D1%8C">Написать автору</a></div>
+ <div class="muted">ПУЛЬС — бесплатный информационный помощник. Не является медицинским приложением, диетологом или персональным тренером.</div>
+</section>
+</main>
+<nav>
+<button class="active" data-id="home" onclick="go('home')"><span class="ico">⌂</span>Главная</button>
+<button data-id="workouts" onclick="go('workouts')"><span class="ico">◈</span>Тренировки</button>
+<button data-id="food" onclick="go('food')"><span class="ico">◉</span>Питание</button>
+<button data-id="motivation" onclick="go('motivation')"><span class="ico">✦</span>Мотивация</button>
+<button data-id="cycle" onclick="go('cycle')"><span class="ico">♡</span>Здоровье</button>
+<button data-id="tools" onclick="go('tools')"><span class="ico">✧</span>Инструменты</button><button data-id="profile" onclick="go('profile')"><span class="ico">◎</span>Профиль</button>
+</nav>
+<script>
+const $=id=>document.getElementById(id), today=()=>new Date().toLocaleDateString('en-CA');
+let db=JSON.parse(localStorage.getItem('pulse_v2')||'{}');
+Object.assign(db,{food:db.food||{},done:db.done||{},favs:db.favs||[],habits:db.habits||{},water:db.water||{},profile:db.profile||{},steps:db.steps||{},dailyTasks:db.dailyTasks||{},activity:db.activity||{},challengeJoins:db.challengeJoins||{},cycle:db.cycle||{starts:[],length:28},moods:db.moods||{},sleep:db.sleep||{},plans:db.plans||[],events:db.events||[],foodPhotos:db.foodPhotos||[],avatar:db.avatar||'🌿',xpLedger:db.xpLedger||{},records:db.records||[],weekPlan:db.weekPlan||{},wallNotes:db.wallNotes||[],customExercises:db.customExercises||[],sportsProfile:db.sportsProfile||{sport:'',level:'Любитель',goal:'Самочувствие и удовольствие',about:''},activeChallenge:db.activeChallenge||null,challengeDays:db.challengeDays||{},recipeFavs:db.recipeFavs||[]});
+let quoteIndex=(Math.floor(Date.now()/86400000)*37)%1000;
+const A=["Начни с малого — маленькие шаги тоже ведут вперёд","Регулярность важнее идеального старта","Движение может быть заботой, а не наказанием","Твой темп имеет значение","Отдых — полноценная часть тренировочного процесса","Не сравнивай свой путь с чужим","Сила проявляется и в умении сделать паузу","Каждая попытка помогает узнать себя лучше","Выбирай активность, которая приносит радость","Тебе не нужно заслуживать заботу о себе"];
+const B=["Сегодня достаточно сделать один посильный шаг","Дай себе время освоить новое","Уважай свои границы и возможности","Прогресс не всегда заметен сразу","Пусть привычки поддерживают твоё благополучие","Последовательность строится без спешки","У каждого дня свой ритм","Терпение помогает продолжать","Слушай своё тело и меняй план при необходимости","Восстановление помогает двигаться дальше"];
+const C=["Твоя ценность не измеряется результатами","Настойчивость не требует жестокости к себе","Здоровье важнее рекордов","Можно начать заново в любой день","Успех складывается из добрых решений","Пусть спорт будет источником радости","Пауза — не поражение","Делай достаточно, а не любой ценой","Сильная привычка начинается с уважения к себе","Твой путь принадлежит только тебе"];
+const quotes=Array.from({length:1000},(_,i)=>`${A[i%10]}. ${B[Math.floor(i/10)%10]}. ${C[Math.floor(i/100)%10]}.`);
+const foods=[["Яблоко",52],["Банан",89],["Апельсин",47],["Клубника",32],["Овсяные хлопья сухие",366],["Гречка варёная",110],["Рис варёный",130],["Картофель отварной",87],["Куриная грудка приготовленная",165],["Яйцо варёное",155],["Творог 5%",121],["Кефир 2,5%",53],["Йогурт натуральный",60],["Молоко 2,5%",52],["Хлеб пшеничный",265],["Хлеб ржаной",259],["Сыр твёрдый",350],["Огурец",15],["Помидор",18],["Морковь",41],["Брокколи",34],["Лосось приготовленный",206],["Фасоль варёная",127],["Макароны варёные",158],["Орехи грецкие",654],["Авокадо",160],["Изюм",299],["Груша",57],["Перловка варёная",123],["Чечевица варёная",116]];
+const exercises=[
+["Разминка","Ходьба на месте, махи руками, мягкие наклоны и вращения суставов","Разминка","5–7 минут","1 блок","Двигайся плавно, без резких движений"],
+["Приседания","Стопы примерно на ширине плеч; отводи таз назад и сохраняй комфортную глубину","Силовая основа","8–12 раз","2–3 подхода","Можно приседать до устойчивого стула"],
+["Отжимания от стены или стола","Ладони на устойчивой опоре, корпус ровный; плавно сгибай и разгибай локти","Силовая основа","8–10 раз","2–3 подхода","Выбирай высоту опоры, при которой техника остаётся спокойной"],
+["Планка","Удерживай корпус ровно, продолжая свободно дышать","Силовая основа","15–30 секунд","2 подхода","Можно выполнять с опорой на колени или от стены"],
+["Ягодичный мостик","Лёжа на спине с согнутыми коленями, плавно поднимай и опускай таз","Силовая основа","10–12 раз","2 подхода","Не прогибай поясницу"],
+["Выпады с опорой","Сделай небольшой шаг назад или вперёд, сгибай ноги в комфортной амплитуде","Силовая основа","6–8 на ногу","1–2 подхода","Держись за устойчивую опору; можно заменить шагами назад с касанием носком"],
+["Мёртвый жук","Лёжа на спине, поочерёдно опускай противоположные руку и ногу в комфортной амплитуде","Силовая основа","8–10 на сторону","2 подхода","Поясница остаётся в удобном нейтральном положении"],
+["Приседание с паузой","Выполни обычное приседание и ненадолго остановись в комфортной нижней точке","Силовая основа","8–10 раз","2 подхода","Пауза короткая; не задерживай дыхание"],
+["Боковая планка","Удерживай боковую опору с колен или на предплечье","Силовая основа","10–20 секунд на сторону","1–2 подхода","Выбирай облегчённый вариант, если так удобнее"],
+["Скалолаз в медленном темпе","Из упора на руках поочерёдно подводи колени вперёд без рывков","Координация","20–30 секунд","1–2 подхода","Можно выполнять стоя, упираясь руками в стену"],
+["Скручивания короткой амплитуды","Лёжа на спине, слегка приподними верх спины, не тяни голову руками","Силовая основа","8–12 раз","1–2 подхода","Если шее или спине неприятно, пропусти упражнение"],
+["Подъёмы на носки","Плавно поднимайся на носки, при необходимости держась за опору","Силовая основа","12–15 раз","2 подхода","Без пружинящих движений"],
+["Супермен — облегчённый вариант","Лёжа на животе, слегка приподними одну руку или противоположную руку и ногу","Силовая основа","6–10 на сторону","1–2 подхода","Не запрокидывай голову и не поднимайся высоко"],
+["Растяжка и заминка","Мягко потяни бёдра, спину и плечи в комфортной амплитуде","Восстановление","5–7 минут","1 блок","Без боли и пружинящих движений"]
+];
+const planNames={general:"Общая физическая подготовка",mobility:"Подвижность и растяжка",strength:"Силовая основа",endurance:"Выносливость"};
+const restDays=new Set([4,7,11,14,18,21,25,28]);
+function save(){localStorage.setItem('pulse_v2',JSON.stringify(db));render()}
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.id===id));window.scrollTo(0,0);render()}
+function q(){return quotes[quoteIndex%1000]}
+function nextQuote(){quoteIndex=(quoteIndex+1)%1000;renderQuotes()}
+function renderQuotes(){$('homeQuote').textContent=q();$('quoteText').textContent=q();$('quoteNumber').textContent=`МЫСЛЬ ${quoteIndex+1} ИЗ 1000`;let fav=db.favs;$('favoriteList').innerHTML=fav.length?fav.map((v,i)=>`<div class="item">${esc(v)} <button class="secondary" onclick="removeFav(${i})">Убрать</button></div>`).join(''):'<p>Пока нет сохранённых мыслей.</p>'}
+function toggleFavorite(){if(!db.favs.includes(q()))db.favs.push(q());else db.favs=db.favs.filter(x=>x!==q());save()}
+function removeFav(i){db.favs.splice(i,1);save()}
+function searchFood(){let s=$('foodSearch').value.trim().toLowerCase();let found=foods.filter(x=>x[0].toLowerCase().includes(s)).slice(0,7);$('foodMatches').innerHTML=s?found.map(x=>`<button class="secondary" style="margin:3px" onclick="pickFood('${x[0]}',${x[1]})">${x[0]} · ${x[1]} ккал/100 г</button>`).join('')||'Совпадений нет — введи вручную.':''}
+function pickFood(n,k){$('foodName').value=n;$('foodKcal').value=k;$('foodSearch').value=n;$('foodMatches').innerHTML='Выбрано из справочника. Значение ориентировочное.'}
+function addFood(){let name=$('foodName').value.trim(),g=Number($('foodGrams').value),k=Number($('foodKcal').value);if(!name||g<=0||!Number.isFinite(k)||k<0){alert('Укажи название, количество и ориентировочное значение на 100 г.');return}let list=db.food[today()]||(db.food[today()]=[]);list.push({id:Date.now(),type:$('mealType').value,name,g,kcal:Math.round(g*k/100)});$('foodName').value='';$('foodSearch').value='';$('foodGrams').value=100;$('foodKcal').value='';$('foodMatches').textContent='';save()}
+function delFood(id){db.food[today()]=(db.food[today()]||[]).filter(x=>x.id!==id);save()}
+function renderFood(){let list=db.food[today()]||[];$('foodRecordCount').textContent=list.length+' записей';$('foodEntries').innerHTML=list.length?list.map(x=>`<div class="item row between"><div><b>${esc(x.name)}</b><div class="muted">${esc(x.type)} · ${x.g} г</div><small>${x.kcal} ккал (оценка)</small></div><button class="secondary" onclick="delFood(${x.id})">Удалить</button></div>`).join(''):'<p>Пока записей нет.</p>'}
+const fourWeekPlans={
+1:{title:"Неделя 1 · адаптация и техника",items:["Разминка — 5–7 минут: ходьба на месте, махи руками, наклоны и вращения суставов.","Приседания — ориентир 2×10.","Отжимания от стены или устойчивого стола — ориентир 2×8.","Планка — до 2×20 секунд; можно выбрать облегчённый вариант.","Ягодичный мостик — ориентир 2×12.","Заминка — около 5 минут: мягкая растяжка бёдер, спины и плеч."]},
+2:{title:"Неделя 2 · освоение движений",items:["Приседания — ориентир 2–3×10–12.","Отжимания от стены/стола или с колен — ориентир 2–3×8–10.","Планка — до 3×20–30 секунд, только если сохраняется свободное дыхание.","Выпады с опорой — 1–2 подхода по 6–8 на ногу.","«Мёртвый жук» — 2×8–10 на сторону.","Мягкая растяжка — 5–7 минут."]},
+3:{title:"Неделя 3 · новые варианты",items:["Приседания с короткой паузой — ориентир 2–3×8–10.","Отжимания в подходящем варианте — ориентир 2–3×8–12.","Боковая планка с колен — до 2×15–20 секунд на сторону.","«Скалолаз» в медленном темпе — 1–2×20–30 секунд.","Скручивания короткой амплитуды — 1–2×8–12.","Растяжка и спокойная заминка."]},
+4:{title:"Неделя 4 · выбери один комфортный вариант",items:[]}
+};
+function renderFourWeekPlan(){
+ const week=Number(($('fourWeekSelect')||{}).value||1),p=fourWeekPlans[week];
+ if(week===4){
+  const mode=(document.getElementById('weekFourMode')||{}).value||'A';
+  const extra=mode==='A'
+   ?'<p><b>Вариант А — спокойный круговой формат</b></p><p>1–2 круга: приседания, отжимания от стены/стола, планка с опорой, выпады с опорой, медленный «скалолаз». Работай в комфортном темпе и отдыхай столько, сколько нужно между упражнениями.</p>'
+   :'<p><b>Вариант Б — силовой формат</b></p><p>Приседания — 2–3×10–12; отжимания в подходящем варианте — 2–3×8–12; планка — до 3×20–30 секунд; подъёмы на носки — 2×12–15; облегчённый «супермен» — 1–2×6–10 на сторону; растяжка — 5–7 минут.</p>';
+  $('fourWeekPlan').innerHTML='<b>'+p.title+'</b><label style="display:block;margin-top:10px">Формат</label><select id="weekFourMode" onchange="renderFourWeekPlan()"><option value="A" '+(mode==='A'?'selected':'')+'>Вариант А — круговой</option><option value="B" '+(mode==='B'?'selected':'')+'>Вариант Б — силовой</option></select>'+extra;
+ } else {$('fourWeekPlan').innerHTML='<b>'+p.title+'</b><ul>'+p.items.map(x=>'<li>'+x+'</li>').join('')+'</ul>';}
+}
+function currentProgram(){return $('programType').value||'general'}
+function dayText(day){if(restDays.has(day))return 'Восстановление: прогулка по желанию, мягкая подвижность и отдых.';let type=currentProgram(),lvl=$('level').value;let selected=exercises.filter(e=>type==='mobility'?e[2]==='Подвижность'||e[2]==='Восстановление':type==='strength'?e[2]==='Силовая основа'||e[2]==='Разминка':type==='endurance'?e[2]==='Выносливость'||e[2]==='Разминка':e[2]!=='Восстановление');let n=(day*3)%selected.length;let chosen=[selected[n],selected[(n+2)%selected.length]];let time=lvl==='easy'?'8–12 минут':lvl==='medium'?'12–20 минут':'15–25 минут';return `${time}. ${chosen.map(e=>e[0]+' — '+e[3]).join('; ')}. Начни с разминки и остановись, если чувствуешь боль или недомогание.`}
+function renderProgram(){let done=db.done[currentProgram()]||[];$('programCalendar').innerHTML=Array.from({length:30},(_,i)=>`<button class="day ${done.includes(i+1)?'done':''}" onclick="showDay(${i+1})">${i+1}</button>`).join('');$('programProgress').textContent=`Отмечено ${done.length} из 30 дней`; $('programBar').style.width=(done.length/30*100)+'%';let d=Math.min(30,Math.max(1,Math.floor((Date.now()-new Date(new Date().getFullYear(),new Date().getMonth(),1).getTime())/86400000)+1));$('todayPlan').innerHTML=`<div class="kicker">ПЛАН ДНЯ ${d} · ${planNames[currentProgram()]}</div><p>${dayText(d)}</p>`}
+function showDay(d){$('todayPlan').innerHTML=`<div class="kicker">ДЕНЬ ${d} · ${planNames[currentProgram()]}</div><p>${dayText(d)}</p>`}
+function completeToday(){let d=Math.min(30,Math.max(1,Math.floor((Date.now()-new Date(new Date().getFullYear(),new Date().getMonth(),1).getTime())/86400000)+1));let type=currentProgram();db.done[type]||=[];if(!db.done[type].includes(d))db.done[type].push(d);save()}
+
+function exerciseArt(e){
+ const poses={
+ 'Силовая основа':'<circle cx="46" cy="22" r="9"/><path d="M46 32v28m0-18-17 12m17-12 17 12M46 60 31 82m15-22 16 22"/>',
+ 'Подвижность':'<circle cx="46" cy="22" r="9"/><path d="M46 32v28m0-16-22-17m22 17 22-17M46 60 31 82m15-22 16 22"/>',
+ 'Выносливость':'<circle cx="46" cy="20" r="9"/><path d="m44 31-8 25 20 5m-20-5-16 20m16-20 22 15m-22-15 20-15"/>',
+ 'Баланс':'<circle cx="46" cy="20" r="9"/><path d="M46 30v28m0-17-19-7m19 7 18-12M46 58 30 81m16-23 22-8"/>',
+ 'Координация':'<circle cx="46" cy="20" r="9"/><path d="M46 30v28m0-17-19-15m19 15 19-15M46 58 25 72m21-14 23 14"/>',
+ 'Разминка':'<circle cx="46" cy="22" r="9"/><path d="M46 32v28m0-17-22-8m22 8 22-8M46 60 31 82m15-22 16 22"/>',
+ 'Восстановление':'<circle cx="46" cy="22" r="9"/><path d="M46 32v28m0-15-18 12m18-12 18 12M46 60 32 80m14-20 15 20"/>'
+ };
+ let art=poses[e[2]]||poses['Разминка'];
+ let svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 92 92"><rect width="92" height="92" rx="13" fill="#17191a"/><circle cx="46" cy="45" r="34" fill="none" stroke="var(--accent)" stroke-opacity=".22" stroke-width="2"/><g fill="none" stroke="#D5FF38" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">${art}</g><path d="M12 78h68" stroke="var(--accent)" stroke-opacity=".5" stroke-width="2"/></svg>`;
+ return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
+}
+function renderExercises(){
+ let s=($('exerciseFilter').value||'').toLowerCase();
+ $('exerciseList').innerHTML=exercises.filter(e=>e.join(' ').toLowerCase().includes(s)).map(e=>`<div class="exercise-card"><img class="exercise-art" alt="Схематичная иллюстрация: ${esc(e[0])}" src="${exerciseArt(e)}"><div><b>${esc(e[0])}</b><div class="muted">${esc(e[1])}</div><div class="exercise-meta"><span class="pill">${esc(e[2])}</span><span class="pill">${esc(e[3])}</span><span class="pill">${esc(e[4])}</span></div><small class="muted">${esc(e[5])}</small></div></div>`).join('')||'<p>Ничего не найдено.</p>';
+ const mine=db.customExercises||[];
+ $('myExerciseList').innerHTML=mine.length?mine.map((e,i)=>`<div class="exercise-card"><div class="exercise-art" aria-hidden="true" style="display:grid;place-items:center;color:var(--accent);font-size:25px">＋</div><div style="flex:1"><b>${esc(e.name)}</b><div class="muted">${esc(e.description)}</div><div class="exercise-meta"><span class="pill">${esc(e.category)}</span><span class="pill">${esc(e.dose||'По самочувствию')}</span><span class="pill">${esc(e.sets||'Без заданных подходов')}</span></div>${e.tip?`<small class="muted">${esc(e.tip)}</small>`:''}<div style="margin-top:8px"><button class="secondary" type="button" onclick="deleteCustomExercise(${i})">Удалить</button></div></div></div>`).join(''):'<p class="muted">Пока нет собственных упражнений. Добавь первое с помощью формы выше.</p>';
+}
+function addCustomExercise(){
+ const name=$('customExerciseName').value.trim(),description=$('customExerciseDesc').value.trim();
+ if(!name||!description){$('customExerciseStatus').textContent='Заполни название и описание.';return;}
+ if((db.customExercises||[]).length>=100){$('customExerciseStatus').textContent='Можно сохранить не более 100 упражнений.';return;}
+ db.customExercises=db.customExercises||[];
+ db.customExercises.push({name,description,category:$('customExerciseCategory').value,dose:$('customExerciseDose').value.trim(),sets:$('customExerciseSets').value.trim(),tip:$('customExerciseTip').value.trim()});
+ ['customExerciseName','customExerciseDesc','customExerciseDose','customExerciseSets','customExerciseTip'].forEach(id=>$(id).value='');
+ $('customExerciseStatus').textContent='Упражнение добавлено в твою библиотеку.';
+ save();
+}
+function deleteCustomExercise(index){
+ if(!Number.isInteger(index)||index<0||index>=(db.customExercises||[]).length)return;
+ db.customExercises.splice(index,1);save();
+}
+
+function setHabit(i,v){db.habits[today()]||={};db.habits[today()][i]=v;if(v)db.activity[today()]=true;save()}
+function saveSteps(){let v=Number($('stepsInput').value);if(!Number.isFinite(v)||v<0||v>100000){alert('Введи количество шагов от 0 до 100 000.');return}db.steps[today()]=Math.round(v);db.activity[today()]=true;save()}
+function renderSteps(){let v=db.steps[today()];$('stepsInput').value=v===undefined?'':v;$('stepsTodayValue').textContent=v===undefined?'Сегодня: пока нет записи':`Сегодня: ${v.toLocaleString('ru-RU')} шагов`;$('stepsPercent').textContent=`${Math.min(100,Math.round((v||0)/10000*100))}% от ориентира`;$('stepsBar').style.width=Math.min(100,(v||0)/10000*100)+'%';let vals=Object.values(db.steps).filter(Number.isFinite);$('stepsDays').textContent=vals.length;$('stepsTotal').textContent=vals.reduce((a,b)=>a+b,0).toLocaleString('ru-RU');$('stepsBest').textContent=(vals.length?Math.max(...vals):0).toLocaleString('ru-RU');$('stepsLeft').textContent=Math.max(0,30-vals.length)}
+function renderHabits(){let h=db.habits[today()]||{};let names=['Прогулка или приятная активность','Полноценный приём пищи','Перерыв и восстановление','Время для сна'];$('habitChecks').innerHTML=names.map((n,i)=>`<div class="item"><label><input type="checkbox" style="width:auto;margin-right:8px" ${h[i]?'checked':''} onchange="setHabit(${i},this.checked)"> ${n}</label></div>`).join('');$('waterValue').textContent=(db.water[today()]||0)+' стаканов'}
+function changeWater(n){db.water[today()]=Math.max(0,(db.water[today()]||0)+n);save()}
+function saveProfile(){db.profile={name:$('profileName').value.trim(),age:$('ageGroup').value,level:$('profileLevel').value};save()}
+function exportData(){let blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='пульс-резервная-копия.json';a.click();URL.revokeObjectURL(a.href)}
+function importData(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!x||typeof x!=='object')throw Error();db={...db,...x};save();alert('Резервная копия загружена.')}catch(_){alert('Не удалось прочитать файл.')}};r.readAsText(f)}
+function clearData(){if(confirm('Удалить все записи и настройки ПУЛЬС на этом устройстве?')){localStorage.removeItem('pulse_v2');db={food:{},done:{},favs:[],habits:{},water:{},profile:{},steps:{},dailyTasks:{},activity:{},challengeJoins:{}};save()}}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+const dailyTasks=[
+"Пройдись немного на свежем воздухе, если погода и самочувствие позволяют.",
+"Сделай короткую паузу от экрана и мягко разомни плечи.",
+"Выбери приятный способ подвигаться: танцы, прогулка или игра.",
+"Приготовь или выбери блюдо с разными продуктами.",
+"Устрой спокойный вечер и выдели время на отдых.",
+"Позови близкого человека на неспешную прогулку.",
+"Попробуй новое упражнение на подвижность без усилия через боль.",
+"Проверь, удобно ли организовано твоё место для отдыха и сна."
+];
+const recipes=[
+["Овсяная каша с бананом","Овсяные хлопья, молоко или вода, банан, орехи по желанию","Свари хлопья до мягкости. Добавь нарезанный банан и орехи."],
+["Омлет с овощами","Яйца, помидор, сладкий перец, зелень","Нарежь овощи, слегка прогрей на сковороде, добавь яйца и готовь до готовности."],
+["Гречка с курицей и овощами","Гречка, приготовленная курица, огурец или другие овощи","Подай готовую гречку с курицей и свежими овощами."],
+["Творожная миска с ягодами","Творог, ягоды, йогурт, мёд по желанию","Смешай творог с йогуртом и добавь ягоды."],
+["Тёплый салат с фасолью","Фасоль, помидоры, огурец, зелень, растительное масло","Смешай фасоль с овощами, зеленью и небольшим количеством масла."],
+["Макароны с томатами и сыром","Макароны, помидоры, сыр, базилик","Отвари макароны, смешай с нарезанными томатами и сыром."]
+];
+let calendarCursor=new Date();
+function completeDailyTask(){db.dailyTasks[today()]=true;db.activity[today()]=true;awardXP('daily-task-'+today(),5);save()}
+function changeCalendarMonth(delta){calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+delta,1);renderCalendar()}
+function renderCalendar(){
+ const y=calendarCursor.getFullYear(),m=calendarCursor.getMonth(),first=new Date(y,m,1),days=new Date(y,m+1,0).getDate();
+ $('calendarMonth').textContent=first.toLocaleDateString('ru-RU',{month:'long',year:'numeric'});
+ let offset=(first.getDay()+6)%7, cells=[];
+ for(let i=0;i<offset;i++)cells.push('<div></div>');
+ for(let d=1;d<=days;d++){let key=new Date(y,m,d).toLocaleDateString('en-CA'),marked=!!db.activity[key]||!!db.dailyTasks[key]||!!db.steps[key]||!!(db.habits[key]&&Object.values(db.habits[key]).some(Boolean));cells.push(`<div class="calendar-cell ${marked?'marked':''}"><b>${d}</b>${marked?'<i class="dot"></i>':''}</div>`)}
+ $('activityCalendar').innerHTML=cells.join('');
+ let count=Object.keys(db.activity).filter(k=>k.startsWith(`${y}-${String(m+1).padStart(2,'0')}-`)&&db.activity[k]).length;
+ $('calendarSummary').textContent=`Отмеченных активных дней в этом месяце: ${count}. Отметь активность в задании дня или марафоне шагов.`;
+}
+function renderAchievements(){
+ let stepDays=Object.keys(db.steps).length,stepTotal=Object.values(db.steps).reduce((a,b)=>a+(Number(b)||0),0);
+ let mealCount=Object.values(db.food).reduce((a,b)=>a+b.length,0),workouts=Object.values(db.done).reduce((a,b)=>a+b.length,0);
+ let habitsDays=Object.values(db.habits).filter(x=>Object.values(x||{}).some(Boolean)).length;
+ let items=[
+ ["🌱","Первый шаг",stepDays>=1],["🚶","Неделя движения",stepDays>=7],["🧭","Исследователь маршрутов",stepDays>=14],
+ ["🍎","Запись питания",mealCount>=1],["📖","Любознательный кулинар",mealCount>=10],["💪","Первое занятие",workouts>=1],
+ ["🏅","Пять занятий",workouts>=5],["✨","Полезная привычка",habitsDays>=1],["🌟","Семь дней заботы",habitsDays>=7]
+ ];
+ $('achievementGrid').innerHTML=items.map(x=>`<div class="badge-card ${x[2]?'':'locked'}"><div class="medal">${x[0]}</div><b>${x[1]}</b><div class="muted">${x[2]?'Получено':'Ещё впереди'}</div></div>`).join('');
+}
+function renderRecipes(){
+ let q=($('recipeSearch')?.value||'').toLowerCase();
+ $('recipeList').innerHTML=recipes.filter(r=>r.join(' ').toLowerCase().includes(q)).map(r=>`<div class="recipe"><b>${r[0]}</b><div class="muted">${r[1]}</div><p>${r[2]}</p></div>`).join('')||'<p>Ничего не найдено.</p>';
+}
+const challenges=[
+ ["7 дней приятного движения","Каждый день выбери комфортную активность или прогулку. Можно менять длительность и отдыхать.","movement"],
+ ["14 дней заботы о себе","Чередуй движение, полноценное питание, перерывы и восстановление.","care"],
+ ["Месяц новых привычек","Выбери одну небольшую привычку и отмечай её выполнение в своём темпе.","habit"]
+];
+function joinChallenge(id){db.challengeJoins[id]=!db.challengeJoins[id];save()}
+function renderChallenges(){
+ $('communityChallenges').innerHTML=challenges.map(c=>`<div class="item"><b>${c[0]}</b><p>${c[1]}</p><button class="${db.challengeJoins[c[2]]?'secondary':''}" onclick="joinChallenge('${c[2]}')">${db.challengeJoins[c[2]]?'Вы участвуете':'Присоединиться'}</button></div>`).join('');
+}
+
+
+const pulseThemes={
+ green:{accent:'#D5FF38',soft:'#303b1c'},
+ red:{accent:'#FF5252',soft:'#3b2024'},
+ blue:{accent:'#438BFF',soft:'#1e2d46'},
+ purple:{accent:'#B56BFF',soft:'#30213f'},
+ peach:{accent:'#FFB38A',soft:'#402c25'},
+ white:{accent:'#F4F4F4',soft:'#343434'}
+};
+function setTheme(name){
+ if(!pulseThemes[name])return;
+ db.profile=db.profile||{};
+ db.profile.theme=name;
+ applyTheme(name);
+ save();
+}
+function applyTheme(name){
+ const t=pulseThemes[name]||pulseThemes.green;
+ document.documentElement.style.setProperty('--lime',t.accent);
+ document.documentElement.style.setProperty('--accent',t.accent);
+ document.documentElement.style.setProperty('--accent-soft',t.soft);
+ document.documentElement.style.setProperty('--green',t.accent);
+ const picker=document.getElementById('themePicker');
+ if(picker)picker.querySelectorAll('[data-theme]').forEach(b=>b.classList.toggle('active',b.dataset.theme===name));
+}
+
+
+function fmtDate(iso){
+ if(!iso)return '';
+ const [y,m,d]=iso.split('-').map(Number);
+ return new Date(y,m-1,d).toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'});
+}
+function addPeriodStart(){
+ const val=$('periodStartInput').value;
+ if(!val){alert('Выбери дату начала месячных.');return;}
+ const date=new Date(val+'T12:00:00');if(Number.isNaN(date.getTime()))return;
+ db.cycle=db.cycle||{starts:[],length:28};
+ if(!db.cycle.starts.includes(val))db.cycle.starts.push(val);
+ db.cycle.starts.sort();$('periodStartInput').value='';save();
+}
+function saveCycleSettings(){
+ const n=Number($('cycleLengthInput').value);
+ if(!Number.isInteger(n)||n<21||n>45){alert('Укажи продолжительность цикла от 21 до 45 дней.');return;}
+ db.cycle=db.cycle||{starts:[],length:28};db.cycle.length=n;save();
+}
+function renderCycle(){
+ const c=db.cycle||{starts:[],length:28},starts=(c.starts||[]).slice().sort();
+ if($('cycleLengthInput'))$('cycleLengthInput').value=c.length||28;
+ $('periodHistory').innerHTML=starts.length?'<p><b>Сохранённые начала:</b></p>'+starts.slice().reverse().map(d=>`<div class="row between"><span>${fmtDate(d)}</span><button class="secondary" onclick="removePeriodStart('${d}')">Удалить</button></div>`).join(''):'Пока нет сохранённых дат.';
+ const box=$('periodPrediction');
+ if(!starts.length){box.innerHTML='<p>Добавь первую дату начала месячных. Для первой оценки будет использована выбранная продолжительность цикла.</p>';return;}
+ const intervals=[];
+ for(let i=1;i<starts.length;i++){const a=new Date(starts[i-1]+'T12:00:00'),b=new Date(starts[i]+'T12:00:00');const days=Math.round((b-a)/86400000);if(days>=15&&days<=60)intervals.push(days);}
+ const avg=intervals.length?Math.round(intervals.reduce((a,b)=>a+b,0)/intervals.length):(c.length||28);
+ const last=new Date(starts[starts.length-1]+'T12:00:00'),next=new Date(last);next.setDate(next.getDate()+avg);
+ const lo=new Date(next);lo.setDate(lo.getDate()-2);const hi=new Date(next);hi.setDate(hi.getDate()+2);
+ box.innerHTML=`<div class="stat"><small>Ориентировочное следующее начало</small><b>${fmtDate(next.toISOString().slice(0,10))}</b><p>Примерное окно: ${fmtDate(lo.toISOString().slice(0,10))} — ${fmtDate(hi.toISOString().slice(0,10))}</p></div><p class="muted">Расчёт основан на ${intervals.length?'среднем интервале между твоими записями ('+avg+' дней)':'выбранной продолжительности цикла ('+avg+' дней)'}. Это оценка, а не точное предсказание.</p>`;
+}
+function removePeriodStart(d){db.cycle.starts=(db.cycle.starts||[]).filter(x=>x!==d);save();}
+
+
+let timerSeconds=0,timerHandle=null;
+function saveMood(){let d=$('moodDate').value||today();db.moods[d]={mood:$('moodValue').value,note:$('moodNote').value.trim()};save();}
+function saveSleep(){let d=$('sleepDate').value||today(),a=$('sleepFrom').value,b=$('sleepTo').value;if(!a||!b)return;let [ah,am]=a.split(':').map(Number),[bh,bm]=b.split(':').map(Number),n=bh*60+bm-(ah*60+am);if(n<=0)n+=1440;db.sleep[d]={from:a,to:b,minutes:n,quality:$('sleepQuality').value};save();}
+function fmtMinutes(n){return Math.floor(n/60)+' ч '+n%60+' мин';}
+function startTimer(){if(timerHandle)return;$('timerStatus').textContent='Таймер работает';timerHandle=setInterval(()=>{timerSeconds++;updateTimer();},1000);}
+function pauseTimer(){if(timerHandle){clearInterval(timerHandle);timerHandle=null;}$('timerStatus').textContent='Пауза';}
+function resetTimer(){pauseTimer();timerSeconds=0;updateTimer();$('timerStatus').textContent='Готов к запуску';}
+function updateTimer(){$('timerDisplay').textContent=String(Math.floor(timerSeconds/60)).padStart(2,'0')+':'+String(timerSeconds%60).padStart(2,'0');}
+function saveWorkoutPlan(){let name=$('planName').value.trim(),items=$('planExercises').value.trim();if(!name||!items){alert('Добавь название и упражнения.');return;}db.plans.push({id:Date.now(),name,items,notes:$('planNotes').value.trim()});$('planName').value='';$('planExercises').value='';$('planNotes').value='';save();}
+function deleteWorkoutPlan(id){db.plans=db.plans.filter(x=>x.id!==id);save();}
+function saveEvent(){let date=$('eventDate').value||today(),title=$('eventText').value.trim();if(!title){alert('Напиши название события.');return;}db.events.push({id:Date.now(),date,title});$('eventText').value='';save();}
+function deleteEvent(id){db.events=db.events.filter(x=>x.id!==id);save();}
+function relaxPrompt(t){let x={breath:'Сядь удобно. Дыши спокойно и естественно около минуты. Не старайся дышать глубже или задерживать дыхание.',pause:'На пару минут отложи дела. Заметь опору под ногами, расслабь плечи и посмотри вокруг. Можно просто посидеть в тишине.',stretch:'Мягко покрути плечами, потянись руками вверх без усилия, осторожно поверни голову вправо и влево. Не пружинь и остановись при боли.'};$('relaxText').textContent=x[t];}
+function setAvatar(v){db.avatar=v;save();}
+function saveFoodPhoto(){let f=$('foodPhoto').files[0];if(!f||!f.type.startsWith('image/')){alert('Выбери фотографию.');return;}if(f.size>1200000){alert('Фото должно быть не больше 1,2 МБ.');return;}let r=new FileReader();r.onload=()=>{db.foodPhotos.unshift({id:Date.now(),date:today(),note:$('photoNote').value.trim(),src:r.result});save();$('foodPhoto').value='';$('photoNote').value='';};r.readAsDataURL(f);}
+function deleteFoodPhoto(id){db.foodPhotos=db.foodPhotos.filter(x=>x.id!==id);save();}
+function renderTools(){
+ $('moodDate').value=$('moodDate').value||today();$('sleepDate').value=$('sleepDate').value||today();$('eventDate').value=$('eventDate').value||today();
+ let moods=Object.entries(db.moods).sort((a,b)=>b[0].localeCompare(a[0])),sleeps=Object.entries(db.sleep).sort((a,b)=>b[0].localeCompare(a[0]));
+ $('moodHistory').innerHTML=moods.length?moods.slice(0,7).map(([d,x])=>`<div class="item"><b>${fmtDate(d)}</b> · ${esc(x.mood)} ${x.note?'— '+esc(x.note):''}</div>`).join(''):'<p class="muted">Записей пока нет.</p>';
+ $('sleepHistory').innerHTML=sleeps.length?sleeps.slice(0,7).map(([d,x])=>`<div class="item"><b>${fmtDate(d)}</b> · ${fmtMinutes(x.minutes)} · ${esc(x.quality)}</div>`).join(''):'<p class="muted">Записей пока нет.</p>';
+ $('toolMoodCount').textContent=moods.length;$('toolSleepCount').textContent=sleeps.length;$('toolPhotoCount').textContent=db.foodPhotos.length;$('toolPlanCount').textContent=db.plans.length;$('toolActivityCount').textContent=Object.values(db.activity).filter(Boolean).length;$('toolHabitCount').textContent=Object.values(db.habits).reduce((n,h)=>n+Object.values(h).filter(Boolean).length,0);
+ $('workoutPlans').innerHTML=db.plans.length?db.plans.map(p=>`<div class="item"><b>${esc(p.name)}</b><p>${esc(p.items).replace(/\\n/g,'<br>')}</p>${p.notes?'<p>'+esc(p.notes)+'</p>':''}<button class="secondary" onclick="deleteWorkoutPlan(${p.id})">Удалить</button></div>`).join(''):'<p class="muted">Планов пока нет.</p>';
+ let ev=db.events.slice();if($('showCycleEvents').checked)(db.cycle.starts||[]).forEach(d=>ev.push({date:d,title:'Начало месячных',cycle:true}));ev.sort((a,b)=>a.date.localeCompare(b.date));
+ $('eventList').innerHTML=ev.length?ev.map(e=>`<div class="item"><b>${fmtDate(e.date)}</b> · ${esc(e.title)} ${e.cycle?'(личная запись)':`<button class="secondary" onclick="deleteEvent(${e.id})">Удалить</button>`}</div>`).join(''):'<p class="muted">Событий пока нет.</p>';
+ $('foodPhotoList').innerHTML=db.foodPhotos.length?db.foodPhotos.slice(0,10).map(p=>`<div class="item"><img src="${p.src}" alt="Фото блюда" style="width:100%;max-height:180px;object-fit:cover;border-radius:10px"><p>${fmtDate(p.date)} ${esc(p.note)}</p><button class="secondary" onclick="deleteFoodPhoto(${p.id})">Удалить фото</button></div>`).join(''):'<p class="muted">Фотографий пока нет.</p>';
+ $('currentAvatar').textContent=db.avatar||'🌿';
+}
+
+
+const rewardTitles=['Первый шаг','Планировщик','Автор рекорда','Участник марафона','Постоянство'];
+function awardXP(key,points){db.xpLedger=db.xpLedger||{};if(!db.xpLedger[key])db.xpLedger[key]=points;}
+function xpTotal(){return Object.values(db.xpLedger||{}).reduce((a,b)=>a+Number(b||0),0);}
+function renderRewards(){
+ let xp=xpTotal(),level=Math.floor(xp/50)+1,progress=xp%50;
+ $('xpLevel').textContent=level;$('xpTitle').textContent='Уровень '+level+' · '+(level<3?'Новичок':level<6?'Исследователь':level<10?'Энтузиаст':'Мастер своего ритма');
+ $('xpPoints').textContent=xp+' очков опыта · до следующего уровня '+(50-progress);
+ $('xpBar').style.width=(progress/50*100)+'%';
+ let rewards=[['🌱','Первый шаг',xp>=10],['🗓️','Планировщик',Object.keys(db.weekPlan||{}).length>0],['🏅','Автор рекорда',(db.records||[]).length>0],['🚩','Участник марафона',!!db.activeChallenge],['✨','Постоянство',Object.keys(db.xpLedger||{}).length>=5]];
+ $('rewardShelf').innerHTML=rewards.map(r=>`<div class="stat" style="text-align:center;opacity:${r[2]?1:.45}"><b style="font-size:25px">${r[0]}</b><small>${r[1]}</small><small>${r[2]?'Открыто':'Пока закрыто'}</small></div>`).join('');
+}
+function renderEncyclopedia(){
+ let q=($('exerciseSearch').value||'').toLowerCase(),cat=$('exerciseCategory').value;
+ let rows=exercises.filter(x=>(!cat||x[2]===cat)&&(!q||x.slice(0,3).join(' ').toLowerCase().includes(q)));
+ $('encyclopediaList').innerHTML=rows.length?rows.map(x=>`<div class="item"><b>${esc(x[0])}</b><p>${esc(x[1])}</p><small>${esc(x[2])} · ${esc(x[3])} · ${esc(x[4])}</small><p class="muted">${esc(x[5])}</p></div>`).join(''):'<p class="muted">Ничего не найдено.</p>';
+}
+function renderCookbook(){
+ let q=($('recipeSearch').value||'').toLowerCase();
+ let rows=recipes.filter((r,i)=>r.join(' ').toLowerCase().includes(q));
+ $('cookbookList').innerHTML=rows.map(r=>{let i=recipes.indexOf(r),fav=(db.recipeFavs||[]).includes(i);return `<div class="item"><b>${esc(r[0])}</b><p><b>Ингредиенты:</b> ${esc(r[1])}</p><p><b>Приготовление:</b> ${esc(r[2])}</p><button class="secondary" onclick="toggleRecipeFav(${i})">${fav?'Убрать из избранного':'В избранное'}</button></div>`}).join('')||'<p class="muted">Рецепты не найдены.</p>';
+}
+function toggleRecipeFav(i){db.recipeFavs=db.recipeFavs||[];db.recipeFavs=db.recipeFavs.includes(i)?db.recipeFavs.filter(x=>x!==i):[...db.recipeFavs,i];save();}
+function saveWeekTask(){let d=$('weekDay').value,t=$('weekTask').value.trim();if(!t){alert('Напиши занятие или план.');return;}db.weekPlan[d]=db.weekPlan[d]||[];db.weekPlan[d].push(t);$('weekTask').value='';awardXP('weekly-plan',10);save();}
+function deleteWeekTask(d,i){db.weekPlan[d].splice(i,1);if(!db.weekPlan[d].length)delete db.weekPlan[d];save();}
+function renderWeekPlan(){let days=['Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье'];$('weekPlanList').innerHTML=days.map(d=>`<div class="item"><b>${d}</b>${(db.weekPlan[d]||[]).map((t,i)=>`<p>${esc(t)} <button class="secondary" onclick="deleteWeekTask('${d}',${i})">Удалить</button></p>`).join('')||'<p class="muted">Пока свободно</p>'}</div>`).join('');}
+function saveWallNote(){let t=$('wallNoteInput').value.trim();if(!t)return;db.wallNotes.unshift({id:Date.now(),text:t});$('wallNoteInput').value='';save();}
+function renderWall(){let q=quotes[(Math.floor(Date.now()/86400000)*37)%1000];$('wallQuote').textContent=q;$('wallNotesList').innerHTML=(db.wallNotes||[]).map(n=>`<div class="item">${esc(n.text)} <button class="secondary" onclick="deleteWallNote(${n.id})">Удалить</button></div>`).join('')||'<p class="muted">Твои заметки появятся здесь.</p>';}
+function deleteWallNote(id){db.wallNotes=db.wallNotes.filter(n=>n.id!==id);save();}
+function saveRecord(){let type=$('recordType').value,value=$('recordValue').value.trim(),date=$('recordDate').value||today();if(!value){alert('Добавь описание достижения.');return;}db.records.unshift({id:Date.now(),type,value,date});awardXP('record-'+Date.now(),15);$('recordValue').value='';save();}
+function deleteRecord(id){db.records=db.records.filter(r=>r.id!==id);save();}
+function renderRecords(){$('recordsList').innerHTML=db.records.length?db.records.map(r=>`<div class="item"><b>${esc(r.type)}</b> · ${fmtDate(r.date)}<p>${esc(r.value)}</p><button class="secondary" onclick="deleteRecord(${r.id})">Удалить</button></div>`).join(''):'<p class="muted">Пока нет записей.</p>';}
+function startPulseChallenge(){let len=Number($('challengeLength').value),theme=$('challengeTheme').value;db.activeChallenge={length:len,theme,start:today()};db.challengeDays={};awardXP('challenge-start-'+today(),5);save();}
+function challengePrompt(){let t=db.activeChallenge&&db.activeChallenge.theme;return t==='movement'?'Выбери приятный вариант движения или прогулки.':t==='care'?'Выдели время для отдыха, еды, воды или общения.':'Попробуй новое занятие или небольшой маршрут, если хочется.';}
+function checkChallengeDay(){if(!db.activeChallenge)return;db.challengeDays[today()]=true;if(Object.keys(db.challengeDays).length>=db.activeChallenge.length)awardXP('challenge-finish-'+db.activeChallenge.start,25);save();}
+function renderChallengeCard(){let c=db.activeChallenge;if(!c){$('activeChallengeCard').innerHTML='<p class="muted">Личный марафон пока не выбран.</p>';return;}let done=Object.keys(db.challengeDays||{}).length;$('activeChallengeCard').innerHTML=`<div class="notice"><b>${c.length} дней · ${c.theme==='movement'?'Приятное движение':c.theme==='care'?'Забота о себе':'Новые впечатления'}</b><p>${challengePrompt()}</p><p>Отмечено дней: ${done} из ${c.length}</p><button onclick="checkChallengeDay()">Отметить сегодня</button><button class="secondary" onclick="endPulseChallenge()">Завершить марафон</button></div>`;}
+function endPulseChallenge(){db.activeChallenge=null;db.challengeDays={};save();}
+function saveSportsProfile(){db.sportsProfile={sport:$('sportFavorite').value.trim(),level:$('sportLevel').value,goal:$('sportGoal').value,about:$('sportAbout').value.trim()};save();}
+function renderSportsProfile(){let p=db.sportsProfile||{};$('sportFavorite').value=p.sport||'';$('sportLevel').value=p.level||'Любитель';$('sportGoal').value=p.goal||'Самочувствие и удовольствие';$('sportAbout').value=p.about||'';}
+function generateWorkout(){
+ let mode=$('generatorMode').value,allowed=exercises.filter(x=>mode==='gentle'?['Разминка','Восстановление','Выносливость'].includes(x[2]):mode==='mobility'?x[2]==='Подвижность':mode==='strength'?x[2]==='Силовая основа':true);
+ let picked=allowed.slice().sort(()=>Math.random()-.5).slice(0,4);
+ if(!picked.length){$('generatedWorkout').textContent='Не удалось подобрать упражнения.';return;}
+ $('generatedWorkout').innerHTML='<div class="notice"><b>Идея занятия — '+(mode==='gentle'?'мягкая активность':mode==='mobility'?'подвижность':mode==='strength'?'лёгкая силовая основа':'разнообразное занятие')+'</b>'+picked.map(x=>`<p><b>${esc(x[0])}</b> — ${esc(x[3])}<br>${esc(x[1])}</p>`).join('')+'<p>Выбирай только подходящие движения, делай паузы и прекращай при дискомфорте.</p><button onclick="saveGeneratedWorkout()">Сохранить как план</button></div>';
+ window.generatedPulsePlan=picked.map(x=>x[0]+' — '+x[3]).join('\n');
+}
+function saveGeneratedWorkout(){if(!window.generatedPulsePlan)return;db.plans.push({id:Date.now(),name:'План из генератора',items:window.generatedPulsePlan,notes:'Подстраивай занятие под самочувствие.'});save();}
+function randomTask(){let pool=dailyTasks.concat(['Напиши близкому человеку доброе сообщение.','Послушай любимую музыку и отдохни.','Выбери новый рецепт, который хочется попробовать.','Устрой небольшую паузу без экрана.']);window.pulseRandomTask=pool[Math.floor(Math.random()*pool.length)];$('randomTaskText').textContent=window.pulseRandomTask;$('randomTaskStatus').textContent='Это идея, а не обязательство.';}
+function acceptRandomTask(){if(!window.pulseRandomTask)randomTask();db.dailyTasks[today()]=true;awardXP('random-task-'+today(),5);$('randomTaskStatus').textContent='Задание выбрано. Выполняй, только если тебе подходит.';save();}
+function exportPulseReport(){
+ let xp=xpTotal(),p=db.sportsProfile||{},records=(db.records||[]).map(r=>`${r.date}: ${r.type} — ${r.value}`).join('\n')||'Пока нет личных рекордов.';
+ let mood=Object.entries(db.moods||{}).map(([d,v])=>`${d}: ${v.mood}`).join('\n')||'Нет записей.';
+ let text=`<!doctype html><html lang="ru"><meta charset="utf-8"><title>Отчёт PULSE</title><style>body{font:15px Arial;color:#222;max-width:760px;margin:40px auto;padding:20px}h1{color:#384b18}section{border-bottom:1px solid #ddd;padding:12px 0}small{color:#666}@media print{button{display:none}}</style><h1>PULSE — личный отчёт</h1><small>Сформирован ${new Date().toLocaleDateString('ru-RU')}</small><section><h2>Спортивный профиль</h2><p>${esc(p.sport||'Вид активности не указан')} · ${esc(p.level||'')}</p><p>${esc(p.goal||'')}</p></section><section><h2>Игровой прогресс</h2><p>${xp} очков опыта</p></section><section><h2>Личные достижения</h2><pre>${esc(records)}</pre></section><section><h2>Самочувствие</h2><pre>${esc(mood)}</pre></section><section><h2>Привычки и активность</h2><p>Дней с отметками активности: ${Object.values(db.activity||{}).filter(Boolean).length}</p></section><p><small>Отчёт создан из локальных записей PULSE. Это не медицинский документ.</small></p><button onclick="window.print()">Печать / Сохранить PDF</button></html>`;
+ let w=window.open('','_blank');if(!w){alert('Разреши всплывающее окно для формирования PDF.');return;}w.document.open();w.document.write(text);w.document.close();setTimeout(()=>w.print(),500);
+}
+function updateShareCard(){let t=$('shareCardText').value||'PULSE';$('shareCardPreviewText').textContent=t;let themes={green:['#202820','#eaffb2'],purple:['#251c32','#e7c8ff'],blue:['#17263b','#c9e2ff'],red:['#351d20','#ffd0d0'],peach:['#3b2921','#ffe0c9']};let c=themes[$('shareCardTheme').value]||themes.green;$('shareCardPreview').style.background=c[0];$('shareCardPreview').style.color=c[1];}
+function downloadShareCard(){let text=$('shareCardText').value||'PULSE';let themes={green:['#202820','#eaffb2'],purple:['#251c32','#e7c8ff'],blue:['#17263b','#c9e2ff'],red:['#351d20','#ffd0d0'],peach:['#3b2921','#ffe0c9']};let c=themes[$('shareCardTheme').value]||themes.green;let cv=document.createElement('canvas');cv.width=1080;cv.height=1080;let ctx=cv.getContext('2d');ctx.fillStyle=c[0];ctx.fillRect(0,0,1080,1080);ctx.fillStyle=c[1];ctx.font='bold 42px Arial';ctx.fillText('PULSE',90,120);ctx.font='bold 76px Arial';let words=text.split(/\s+/),lines=[],line='';for(let word of words){let test=line?line+' '+word:word;if(ctx.measureText(test).width>880&&line){lines.push(line);line=word;}else line=test;}if(line)lines.push(line);let y=460-(lines.length*48);for(let l of lines){ctx.fillText(l,90,y);y+=100;}ctx.font='26px Arial';ctx.fillText('ТВОЙ РИТМ · ТВОЯ СИЛА · ТВОЙ ПРОГРЕСС',90,960);let a=document.createElement('a');a.download='PULSE-card.png';a.href=cv.toDataURL('image/png');a.click();}
+function renderToolsV12(){renderRewards();renderEncyclopedia();renderCookbook();renderWeekPlan();renderWall();renderRecords();renderChallengeCard();renderSportsProfile();updateShareCard();}
+
+function render(){renderFourWeekPlan();applyTheme((db.profile&&db.profile.theme)||'green');renderCycle();let f=db.food[today()]||[],h=db.habits[today()]||{},w=db.water[today()]||0,done=Object.values(db.done).reduce((a,b)=>a+b.length,0);$('homeMeals').textContent=f.length;$('homeWorkouts').textContent=done;$('homeHabits').textContent=Object.values(h).filter(Boolean).length;$('homeWater').textContent=w;$('statFood').textContent=Object.values(db.food).reduce((a,b)=>a+b.length,0);$('statTrain').textContent=done;$('statHabit').textContent=Object.values(h).filter(Boolean).length;$('statWater').textContent=w;$('hello').textContent=db.profile.name?`Привет, ${db.profile.name}!`:'Привет!';$('dateLine').textContent=new Date().toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'});renderQuotes();renderFood();renderProgram();renderExercises();renderHabits();renderSteps();renderCalendar();renderAchievements();renderRecipes();renderChallenges();renderTools();renderToolsV12();$('dailyTaskText').textContent=dailyTasks[(Math.floor(Date.now()/86400000))%dailyTasks.length];$('dailyTaskStatus').textContent=db.dailyTasks[today()]?'Задание отмечено':'Можно выполнить в удобное время';$('dailyTaskButton').textContent=db.dailyTasks[today()]?'Выполнено ✓':'Выполнено';$('dailyTaskButton').disabled=!!db.dailyTasks[today()];$('profileName').value=db.profile.name||'';$('ageGroup').value=db.profile.age||'teen';$('profileLevel').value=db.profile.level||'Начинающий'}
+render();
+$('shareCardText').addEventListener('input',updateShareCard);$('shareCardTheme').addEventListener('change',updateShareCard);
+if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+</script>
+</body></html>
